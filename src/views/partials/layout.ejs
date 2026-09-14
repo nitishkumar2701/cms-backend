@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= typeof title !=='undefined' ? title + ' · CMS' : 'CMS' %>
+  </title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/common.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">CMS</span>
+        <span class="brand-name">Admin Panel</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="nav-link <%= active === 'dashboard' ? 'active' : '' %>">
+          <span class="nav-icon">&#9632;</span> Dashboard
+        </a>
+        <a href="/news-posts" class="nav-link <%= active === 'news-posts' ? 'active' : '' %>">
+          <span class="nav-icon">&#128240;</span> News Posts
+        </a>
+        <a href="/page-content" class="nav-link <%= active === 'page-content' ? 'active' : '' %>">
+          <span class="nav-icon">&#128196;</span> Page Content
+        </a>
+        <a href="/house-types" class="nav-link <%= active === 'house-types' ? 'active' : '' %>">
+          <span class="nav-icon">&#127968;</span> House Types
+        </a>
+      </nav>
+      <form action="/logout" method="POST" class="sidebar-footer">
+        <button type="submit" class="btn btn-logout">Log out</button>
+      </form>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content">
+      <header class="topbar">
+        <h1 class="page-title">
+          <%= title %>
+        </h1>
+      </header>
+      <div class="page-body">
+        <%- body %>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

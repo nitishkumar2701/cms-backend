@@ -1,0 +1,121 @@
+<div class="toolbar">
+  <div class="toolbar-filters">
+    <input type="text" id="searchInput" placeholder="Search name, style..." class="input" />
+    <select id="statusFilter" class="input">
+      <option value="">All statuses</option>
+      <option value="draft">Draft</option>
+      <option value="available">Available</option>
+      <option value="sold">Sold</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" id="openCreateBtn">+ New House Type</button>
+</div>
+
+<div id="alertBox"></div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Style</th>
+        <th>Bed/Bath</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Updated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="7" class="empty-row">Loading...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 id="modalTitle">New House Type</h2>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <form id="postForm" class="modal-body">
+      <input type="hidden" id="houseId" />
+
+      <label for="name">Name *</label>
+      <input type="text" id="name" required class="input" />
+
+      <div class="form-row">
+        <div>
+          <label for="style">Style</label>
+          <input type="text" id="style" class="input" />
+        </div>
+        <div>
+          <label for="berRating">BER Rating</label>
+          <input type="text" id="berRating" class="input" placeholder="A2, B1..." />
+        </div>
+      </div>
+
+      <label for="description">Description</label>
+      <textarea id="description" rows="4" class="input"></textarea>
+
+      <label for="images">Image URLs (comma separated)</label>
+      <input type="text" id="images" class="input" placeholder="https://.../1.jpg, https://.../2.jpg" />
+
+      <div class="form-row form-row-3">
+        <div>
+          <label for="price">Price</label>
+          <input type="number" step="0.01" id="price" class="input" />
+        </div>
+        <div>
+          <label for="floors">Floors</label>
+          <input type="number" id="floors" class="input" />
+        </div>
+        <div>
+          <label for="garageSpaces">Garage Spaces</label>
+          <input type="number" id="garageSpaces" class="input" />
+        </div>
+      </div>
+
+      <div class="form-row form-row-3">
+        <div>
+          <label for="bedrooms">Bedrooms</label>
+          <input type="number" id="bedrooms" class="input" />
+        </div>
+        <div>
+          <label for="bathrooms">Bathrooms</label>
+          <input type="number" id="bathrooms" class="input" />
+        </div>
+        <div>
+          <label for="status">Status</label>
+          <select id="status" class="input">
+            <option value="draft">Draft</option>
+            <option value="available">Available</option>
+            <option value="sold">Sold</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="floorAreaSqm">Floor Area (sqm)</label>
+          <input type="number" step="0.01" id="floorAreaSqm" class="input" />
+        </div>
+        <div>
+          <label for="floorAreaSqft">Floor Area (sqft)</label>
+          <input type="number" step="0.01" id="floorAreaSqft" class="input" />
+        </div>
+      </div>
+
+      <label for="publishedAt">Published At</label>
+      <input type="datetime-local" id="publishedAt" class="input" />
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save House Type</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/house-types.js" defer></script>

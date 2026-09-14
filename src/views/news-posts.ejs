@@ -1,0 +1,94 @@
+<div class="toolbar">
+  <div class="toolbar-filters">
+    <input type="text" id="searchInput" placeholder="Search title, author, category..." class="input" />
+    <select id="statusFilter" class="input">
+      <option value="">All statuses</option>
+      <option value="draft">Draft</option>
+      <option value="published">Published</option>
+      <option value="archived">Archived</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" id="openCreateBtn">+ New Post</button>
+</div>
+
+<div id="alertBox"></div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Published</th>
+        <th>Updated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr><td colspan="7" class="empty-row">Loading...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">New Post</h2>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <form id="postForm" class="modal-body">
+      <input type="hidden" id="postId" />
+
+      <label for="title">Title *</label>
+      <input type="text" id="title" required class="input" />
+
+      <label for="body">Body *</label>
+      <textarea id="body" rows="6" required class="input"></textarea>
+
+      <div class="form-row">
+        <div>
+          <label for="authorName">Author</label>
+          <input type="text" id="authorName" class="input" />
+        </div>
+        <div>
+          <label for="category">Category</label>
+          <input type="text" id="category" class="input" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="section">Section</label>
+          <input type="text" id="section" class="input" />
+        </div>
+        <div>
+          <label for="status">Status</label>
+          <select id="status" class="input">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="imageUrl">Image URL</label>
+      <input type="text" id="imageUrl" class="input" />
+
+      <label for="tags">Tags (comma separated)</label>
+      <input type="text" id="tags" class="input" placeholder="ireland, housing, news" />
+
+      <label for="publishedAt">Published At</label>
+      <input type="datetime-local" id="publishedAt" class="input" />
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Post</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/news-posts.js" defer></script>

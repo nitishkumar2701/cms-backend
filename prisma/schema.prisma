@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+
+  @@map("admin_users")
+}
+
+model NewsPost {
+  id          Int       @id @default(autoincrement())
+  title       String
+  body        String
+  authorName  String?   @map("author_name")
+  imageUrl    String?   @map("image_url")
+  category    String?
+  tags        String[]
+  section     String?
+  status      String    @default("draft")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("news_posts")
+}
+
+model PageContent {
+  id              Int      @id @default(autoincrement())
+  title           String
+  sectionId       String   @map("section_id")
+  sectionTitle    String   @map("section_title")
+  sectionSubtitle String?  @map("section_subtitle")
+  sectionBody     String   @map("section_body")
+  imageUrl        String?  @map("image_url")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("page_content")
+}
+
+model HouseType {
+  id            Int       @id @default(autoincrement())
+  name          String
+  berRating     String?   @map("ber_rating")
+  style         String?
+  description   String?
+  images        String[]
+  price         Decimal?  @db.Decimal(12, 2)
+  floors        Int?
+  bedrooms      Int?
+  bathrooms     Int?
+  floorAreaSqm  Decimal?  @map("floor_area_sqm") @db.Decimal(8, 2)
+  floorAreaSqft Decimal?  @map("floor_area_sqft") @db.Decimal(8, 2)
+  garageSpaces  Int?      @map("garage_spaces")
+  status        String    @default("draft")
+  publishedAt   DateTime? @map("published_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("house_types")
+}
