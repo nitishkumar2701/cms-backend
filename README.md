@@ -18,12 +18,7 @@ login page that authenticates against the `admin_users` table.
 cd cms-backend
 npm install
 ```
-
-## 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
+## 2 . Update Environment Variables
 
 Edit `.env` and set:
 
@@ -35,9 +30,7 @@ Edit `.env` and set:
 
 ## 3. Generate the Prisma client
 
-The `prisma/schema.prisma` file already contains the models you provided
-(`AdminUser`, `NewsPost`, `PageContent`, `HouseType`) mapped to your existing
-tables (`admin_users`, `news_posts`, `page_content`, `house_types`). Since the
+Since the
 tables already exist in your database, just generate the client — do **not**
 run `migrate` (that would try to create tables that already exist):
 
@@ -45,28 +38,7 @@ run `migrate` (that would try to create tables that already exist):
 npx prisma generate
 ```
 
-If you ever want to confirm the schema matches the live database, you can run
-`npx prisma db pull` and diff the result against `schema.prisma`.
-
-## 4. Create an admin login
-
-The login page checks the `admin_users` table and expects `password` to be a
-**bcrypt hash** (recommended). Use the seed script to create or update an
-admin user with a properly hashed password:
-
-```bash
-npm run seed:admin -- <username> <password>
-# example
-npm run seed:admin -- admin "S3cure-Passw0rd!"
-npm run seed:admin -- admin pass123
-```
-
-> Note: if a row in `admin_users` already has a plain-text password (not a
-> bcrypt hash), the login controller will still accept a direct string match
-> as a fallback — but you should migrate every account to a hashed password
-> with the seed script above as soon as possible.
-
-## 5. Run the app
+## 4. Run the app
 
 ```bash
 npm run dev    # with nodemon, auto-restarts on changes
