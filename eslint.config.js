@@ -20,7 +20,8 @@ module.exports = [
         beforeEach: "readonly",
         afterEach: "readonly",
         beforeAll: "readonly",
-        afterAll: "readonly"
+        afterAll: "readonly",
+        jest: "readonly"
       }
     },
     rules: {

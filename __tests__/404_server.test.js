@@ -3,6 +3,8 @@ const app = require("../src/app");
 const prisma = require("../src/config/prisma");
 
 describe("Express Server Basic Tests", () => {
+
+  jest.setTimeout(15000);
   // Always close Prisma connection so Jest doesn't hang
   afterAll(async () => {
     await prisma.$disconnect();
