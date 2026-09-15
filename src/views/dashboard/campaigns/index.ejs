@@ -1,0 +1,44 @@
+<div class="toolbar">
+    <div class="toolbar-filters">
+        <h2 style="margin: 0; font-size: 18px; align-self: center;">Email Dispatch Logs</h2>
+    </div>
+    <a href="/dashboard/campaigns/new" class="btn btn-primary">Compose New Campaign</a>
+</div>
+
+<% if (logs.length===0) { %>
+    <div class="card">
+        <div class="empty-row" style="padding: 40px 0; text-align: center; color: var(--text-muted);">
+            No email logs found yet.
+        </div>
+    </div>
+    <% } else { %>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Subscriber Email</th>
+                        <th>Status</th>
+                        <th>Sent At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% logs.forEach(log=> { %>
+                        <tr>
+                            <td><strong>
+                                    <%= log.subscriber.email %>
+                                </strong></td>
+                            <td>
+                                <span
+                                    class="badge badge-<%= log.status === 'sent' ? 'published' : (log.status === 'pending' ? 'draft' : 'archived') %>">
+                                    <%= log.status %>
+                                </span>
+                            </td>
+                            <td style="color: var(--text-muted);">
+                                <%= new Date(log.createdAt).toLocaleString() %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>

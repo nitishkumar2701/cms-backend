@@ -13,6 +13,9 @@ const jwt = require("jsonwebtoken");
 const authRoutes = require("./routes/auth.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
 
+const publicTrackingRoutes = require("./routes/publicTracking.routes");
+const campaignRoutes = require("./routes/campaigns.routes");
+
 // 2. REST API Routes (used by internal dashboard JS)
 const newsPostsRoutes = require("./routes/newsPosts.routes");
 const pageContentRoutes = require("./routes/pageContent.routes");
@@ -47,6 +50,9 @@ async function initApp() {
   // --- EJS UI ROUTES ---
   app.use("/", authRoutes);
   app.use("/", dashboardRoutes);
+
+  app.use("/api", publicTrackingRoutes);
+  app.use("/", campaignRoutes);
 
   // --- REST API ENDPOINTS (For CMS Dashboard JS) ---
   app.use("/api/news-posts", newsPostsRoutes);

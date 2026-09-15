@@ -67,3 +67,19 @@ model HouseType {
 
   @@map("house_types")
 }
+
+model Subscriber {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  consented Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  logs      EmailLog[]
+}
+
+model EmailLog {
+  id           String     @id @default(uuid())
+  subscriberId String
+  subscriber   Subscriber @relation(fields: [subscriberId], references: [id])
+  status       String     // "sent" or "failed" 
+  createdAt    DateTime   @default(now())
+}

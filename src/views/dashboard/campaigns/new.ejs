@@ -1,0 +1,30 @@
+<div style="max-width: 680px; margin: 0 auto;">
+    <div class="card">
+        <h2 style="margin-bottom: 16px;">Compose Email Campaign</h2>
+        <form action="/dashboard/campaigns" method="POST" style="display: flex; flex-direction: column; gap: 14px;">
+
+            <div>
+                <label for="subject"
+                    style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Email Subject</label>
+                <input type="text" class="input" id="subject" name="subject" placeholder="Enter campaign subject..."
+                    required>
+            </div>
+
+
+
+            <div>
+                <label for="body" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Email
+                    Body (HTML or Plain Text)</label>
+                <textarea class="input" id="body" name="body" rows="8" required
+                    placeholder="Write your campaign content here..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button type="submit" class="btn btn-primary">Send Campaign to All Subscribers</button>
+                <a href="/dashboard/campaigns" class="btn btn-secondary"
+                    style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>
