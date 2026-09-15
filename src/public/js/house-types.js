@@ -8,15 +8,42 @@
   const form = document.getElementById("postForm");
 
   let debounceTimer = null;
+  
+  // State flags for auto-draft logic
+  let isDirty = false;
+  let isSubmitting = false;
+
+  // Track any typing/changes in the form
+  form.addEventListener("input", () => {
+    isDirty = true;
+  });
 
   function openModal(isEdit) {
     modalTitle.textContent = isEdit ? "Edit House Type" : "New House Type";
     modalOverlay.classList.add("open");
+    // Reset state flags when opening
+    isDirty = false;
+    isSubmitting = false;
   }
+
   function closeModal() {
     modalOverlay.classList.remove("open");
     form.reset();
     document.getElementById("houseId").value = "";
+    isDirty = false;
+    isSubmitting = false;
+  }
+
+  // Handle closing modal with potential auto-save
+  async function handleModalClose() {
+    if (isDirty && !isSubmitting) {
+      const nameVal = document.getElementById("name").value.trim();
+      // Only auto-save if they at least typed a name
+      if (nameVal !== "") {
+        await saveHouseType("draft", true);
+      }
+    }
+    closeModal();
   }
 
   document.getElementById("openCreateBtn").addEventListener("click", () => {
@@ -25,14 +52,16 @@
     document.getElementById("status").value = "draft";
     openModal(false);
   });
-  document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-  document.getElementById("cancelBtn").addEventListener("click", closeModal);
+
+  // Attach the new handleModalClose to close events
+  document.getElementById("modalCloseBtn").addEventListener("click", handleModalClose);
+  document.getElementById("cancelBtn").addEventListener("click", handleModalClose);
   modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
+    if (e.target === modalOverlay) handleModalClose();
   });
 
   function statusBadge(status) {
-    const cls = status === "available" ? "badge-available" : status === "sold" ? "badge-sold" : "badge-draft";
+    const cls = status === "published" ? "badge-published" : "badge-draft";
     return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
   }
 
@@ -125,9 +154,16 @@
     }
   }
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  // Extracted Save Logic
+  async function saveHouseType(forcedStatus, isAutoDraft = false) {
     const id = document.getElementById("houseId").value;
+    
+    // Auto-set publish date if switching to published and none is set
+    let pubAt = document.getElementById("publishedAt").value;
+    if (forcedStatus === "published" && !pubAt) {
+      pubAt = new Date().toISOString().slice(0, 16); // Formats to roughly match datetime-local
+    }
+
     const payload = {
       name: document.getElementById("name").value,
       style: document.getElementById("style").value,
@@ -139,25 +175,32 @@
       garageSpaces: document.getElementById("garageSpaces").value,
       bedrooms: document.getElementById("bedrooms").value,
       bathrooms: document.getElementById("bathrooms").value,
-      status: document.getElementById("status").value,
+      status: forcedStatus, // Override status here
       floorAreaSqm: document.getElementById("floorAreaSqm").value,
       floorAreaSqft: document.getElementById("floorAreaSqft").value,
-      publishedAt: document.getElementById("publishedAt").value,
+      publishedAt: pubAt,
     };
 
     try {
       if (id) {
         await apiFetch(`${API}/${id}`, { method: "PUT", body: JSON.stringify(payload) });
-        showAlert("alertBox", "House type updated.", "success");
+        showAlert("alertBox", isAutoDraft ? "Draft saved automatically." : "House type published.", "success");
       } else {
         await apiFetch(API, { method: "POST", body: JSON.stringify(payload) });
-        showAlert("alertBox", "House type created.", "success");
+        showAlert("alertBox", isAutoDraft ? "Draft saved automatically." : "House type published.", "success");
       }
-      closeModal();
       loadItems();
     } catch (err) {
       showAlert("alertBox", err.message, "error");
     }
+  }
+
+  // Handle explicit form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    isSubmitting = true;
+    await saveHouseType("published", false);
+    closeModal();
   });
 
   searchInput.addEventListener("input", () => {

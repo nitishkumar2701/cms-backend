@@ -9,14 +9,41 @@
 
   let debounceTimer = null;
 
+  // State flags for auto-draft logic
+  let isDirty = false;
+  let isSubmitting = false;
+
+  // Track any typing/changes in the form
+  form.addEventListener("input", () => {
+    isDirty = true;
+  });
+
   function openModal(isEdit) {
     modalTitle.textContent = isEdit ? "Edit Post" : "New Post";
     modalOverlay.classList.add("open");
+    // Reset state flags when opening
+    isDirty = false;
+    isSubmitting = false;
   }
+  
   function closeModal() {
     modalOverlay.classList.remove("open");
     form.reset();
     document.getElementById("postId").value = "";
+    isDirty = false;
+    isSubmitting = false;
+  }
+
+  // Handle closing modal with potential auto-save
+  async function handleModalClose() {
+    if (isDirty && !isSubmitting) {
+      const titleVal = document.getElementById("title").value.trim();
+      // Only auto-save if they at least typed a title
+      if (titleVal !== "") {
+        await savePost("draft", true);
+      }
+    }
+    closeModal();
   }
 
   document.getElementById("openCreateBtn").addEventListener("click", () => {
@@ -25,14 +52,16 @@
     document.getElementById("status").value = "draft";
     openModal(false);
   });
-  document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-  document.getElementById("cancelBtn").addEventListener("click", closeModal);
+
+  // Attach the new handleModalClose to close events
+  document.getElementById("modalCloseBtn").addEventListener("click", handleModalClose);
+  document.getElementById("cancelBtn").addEventListener("click", handleModalClose);
   modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
+    if (e.target === modalOverlay) handleModalClose();
   });
 
   function statusBadge(status) {
-    const cls = status === "published" ? "badge-published" : status === "archived" ? "badge-archived" : "badge-draft";
+    const cls = status === "published" ? "badge-published": "badge-draft";
     return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
   }
 
@@ -113,34 +142,48 @@
     }
   }
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  // Extracted Save Logic
+  async function savePost(forcedStatus, isAutoDraft = false) {
     const id = document.getElementById("postId").value;
+    
+    // Auto-set publish date if switching to published and none is set
+    let pubAt = document.getElementById("publishedAt").value;
+    if (forcedStatus === "published" && !pubAt) {
+      pubAt = new Date().toISOString().slice(0, 16); 
+    }
+
     const payload = {
       title: document.getElementById("title").value,
       body: document.getElementById("body").value,
       authorName: document.getElementById("authorName").value,
       category: document.getElementById("category").value,
       section: document.getElementById("section").value,
-      status: document.getElementById("status").value,
+      status: forcedStatus, // Override status here
       imageUrl: document.getElementById("imageUrl").value,
       tags: document.getElementById("tags").value,
-      publishedAt: document.getElementById("publishedAt").value,
+      publishedAt: pubAt,
     };
 
     try {
       if (id) {
         await apiFetch(`${API}/${id}`, { method: "PUT", body: JSON.stringify(payload) });
-        showAlert("alertBox", "News post updated.", "success");
+        showAlert("alertBox", isAutoDraft ? "Draft saved automatically." : "News post published.", "success");
       } else {
         await apiFetch(API, { method: "POST", body: JSON.stringify(payload) });
-        showAlert("alertBox", "News post created.", "success");
+        showAlert("alertBox", isAutoDraft ? "Draft saved automatically." : "News post published.", "success");
       }
-      closeModal();
       loadPosts();
     } catch (err) {
       showAlert("alertBox", err.message, "error");
     }
+  }
+
+  // Handle explicit form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    isSubmitting = true;
+    await savePost("published", false);
+    closeModal();
   });
 
   searchInput.addEventListener("input", () => {
