@@ -1,0 +1,39 @@
+name: Lint and Test
+
+# Trigger the workflow on pushes and pull requests to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Run Lint and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Set up the Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "npm"
+
+      # 3. Install dependencies exactly as they are in package-lock.json
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. Run the linter
+      - name: Run Lint
+        run: npm run lint
+
+      # 5. Run the tests
+      - name: Run Tests
+        run: npm run test
