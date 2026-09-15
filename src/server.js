@@ -2,14 +2,16 @@ const initApp = require("./app");
 
 const PORT = process.env.PORT || 3000;
 
+const baseURL = process.env.BASE_URL;
+
 async function startServer() {
   try {
     const app = await initApp();
     
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
-      console.log(`Application - http://localhost:${PORT}`);
-      console.log(`GraphQL endpoint - http://localhost:${PORT}/graphql`);
+      console.log(`Application - ${baseURL}:${PORT}`);
+      console.log(`GraphQL endpoint - ${baseURL}:${PORT}/graphql`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
