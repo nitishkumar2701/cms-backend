@@ -33,8 +33,10 @@
   },
   "devDependencies": {
     "eslint": "^10.10.0",
+    "jest": "^30.5.1",
     "nodemon": "^3.1.4",
-    "prisma": "^5.20.0"
+    "prisma": "^5.20.0",
+    "supertest": "^7.2.2"
   },
   "engines": {
     "node": ">=18.0.0"
