@@ -9,10 +9,10 @@ router.get("/dashboard/campaigns", requireAuthPage, async (req, res) => {
   const logs = await prisma.emailLog.findMany({
     include: { subscriber: true },
     orderBy: { createdAt: "desc" },
-    take: 100 // limit to recent logs
+    take: 100
   });
 
-  res.render("dashboard/campaigns/index", { 
+  res.render("campaign-logs", { 
     logs, 
     active: "campaigns", 
     title: "Email Campaigns" 
@@ -22,22 +22,21 @@ router.get("/dashboard/campaigns", requireAuthPage, async (req, res) => {
 // Create Campaign Form
 router.get("/dashboard/campaigns/new", requireAuthPage, async (req, res) => {
   const newsPosts = await prisma.newsPost.findMany({ where: { status: "published" } });
-  res.render("dashboard/campaigns/new", { 
+  res.render("campaign-new", { 
     newsPosts, 
     active: "campaigns", 
     title: "Compose Campaign" 
   });
 });
 
-// Handle Campaign Submission & Trigger Background Job
+// Handle Campaign Submission
 router.post("/dashboard/campaigns", requireAuthPage, async (req, res) => {
   const { subject, body, newsPostId } = req.body;
-
-  // Trigger background job asynchronously with the form data
+  const parsedNewsPostId = newsPostId ? parseInt(newsPostId, 10) : null;
   sendEmailCampaign({
     subject,
     body,
-    newsPostId: newsPostId || null
+    newsPostId: parsedNewsPostId
   });
 
   res.redirect("/dashboard/campaigns");

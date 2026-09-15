@@ -5,12 +5,25 @@
 
             <div>
                 <label for="subject"
-                    style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Email Subject</label>
+                    style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Email Subject /
+                    Title</label>
                 <input type="text" class="input" id="subject" name="subject" placeholder="Enter campaign subject..."
                     required>
             </div>
 
-
+            <div>
+                <label for="newsPostId"
+                    style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Link to News Post /
+                    Property (Optional)</label>
+                <select class="input" id="newsPostId" name="newsPostId">
+                    <option value="">-- None (Standalone Message) --</option>
+                    <% newsPosts.forEach(post=> { %>
+                        <option value="<%= post.id %>">
+                            <%= post.title %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
 
             <div>
                 <label for="body" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Email

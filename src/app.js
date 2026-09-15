@@ -12,7 +12,6 @@ const jwt = require("jsonwebtoken");
 // 1. EJS Dashboard Page Routes
 const authRoutes = require("./routes/auth.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
-
 const publicTrackingRoutes = require("./routes/publicTracking.routes");
 const campaignRoutes = require("./routes/campaigns.routes");
 
@@ -51,7 +50,8 @@ async function initApp() {
   app.use("/", authRoutes);
   app.use("/", dashboardRoutes);
 
-  app.use("/api", publicTrackingRoutes);
+  // UPDATED: Mounted to "/" so /unsubscribe works directly without /api prefix
+  app.use("/", publicTrackingRoutes); 
   app.use("/", campaignRoutes);
 
   // --- REST API ENDPOINTS (For CMS Dashboard JS) ---

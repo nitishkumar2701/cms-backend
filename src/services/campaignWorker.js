@@ -1,13 +1,9 @@
 const prisma = require("../config/prisma");
-const nodemailer = require("nodemailer");
+const { BrevoClient } = require("@getbrevo/brevo");
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
+// Initialize the modern Brevo API client
+const brevo = new BrevoClient({
+  apiKey: process.env.BREVOKEY,
 });
 
 async function sendEmailCampaign({ subject, body, newsPostId }) {
@@ -17,9 +13,13 @@ async function sendEmailCampaign({ subject, body, newsPostId }) {
       where: { consented: true },
     });
 
-    // 2. Loop through subscribers asynchronously
+    let newsPost = null;
+    if (newsPostId) {
+      newsPost = await prisma.newsPost.findUnique({ where: { id: newsPostId } });
+    }
+
+    // 2. Loop through subscribers and dispatch via HTTP API
     for (const sub of subscribers) {
-      // Create an email log entry first to get a unique log ID for tracking
       const log = await prisma.emailLog.create({
         data: {
           subscriberId: sub.id,
@@ -28,12 +28,13 @@ async function sendEmailCampaign({ subject, body, newsPostId }) {
       });
 
       const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-      const unsubscribeUrl = `${baseUrl}/api/unsubscribe?email=${encodeURIComponent(sub.email)}`;
-      const trackingPixelUrl = `${baseUrl}/api/track/open?logId=${log.id}`;
+      const unsubscribeUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(sub.email)}`;
+      const trackingPixelUrl = `${baseUrl}/track/open?logId=${log.id}`;
 
-      const htmlBody = `
+      const htmlContent = `
         <div>
           ${body}
+          ${newsPost ? `<p><strong>Campaign Related to ${newsPost.title}</strong> </p>` : ""}
           <hr/>
           <p style="font-size: 11px; color: #666;">
             You are receiving this because you subscribed to updates on our platform.<br/>
@@ -44,11 +45,12 @@ async function sendEmailCampaign({ subject, body, newsPostId }) {
       `;
 
       try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: sub.email,
+        // Send email via Brevo's modern HTTP API
+        await brevo.transactionalEmails.sendTransacEmail({
+          sender: { email: process.env.EMAIL_FROM, name: "IRE Homes CMS" },
+          to: [{ email: sub.email }],
           subject: subject,
-          html: htmlBody,
+          htmlContent: htmlContent,
         });
 
         // Mark log as sent
