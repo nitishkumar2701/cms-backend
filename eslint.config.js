@@ -11,7 +11,16 @@ module.exports = [
         console: "readonly",
         process: "readonly",
         __dirname: "readonly",
-        setTimeout: "readonly"
+        setTimeout: "readonly",
+        //Jest testing globals
+        describe: "readonly",
+        it: "readonly",
+        test: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly"
       }
     },
     rules: {
