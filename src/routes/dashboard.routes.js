@@ -3,6 +3,7 @@ const router = express.Router();
 const prisma = require("../config/prisma");
 const { requireAuthPage } = require("../middleware/auth");
 
+//Handle CMS Dashboard
 router.get("/dashboard", requireAuthPage, async (req, res) => {
   try {
     const [newsCount, pageCount, houseCount, publishedNews, availableHouses] =
@@ -29,14 +30,15 @@ router.get("/dashboard", requireAuthPage, async (req, res) => {
   }
 });
 
+//Handle New Posts Route
 router.get("/news-posts", requireAuthPage, (req, res) => {
   res.render("news-posts", { title: "News Posts", active: "news-posts" });
 });
-
+//Handle Page Content Route
 router.get("/page-content", requireAuthPage, (req, res) => {
   res.render("page-content", { title: "Page Content", active: "page-content" });
 });
-
+//Handle House Types Route
 router.get("/house-types", requireAuthPage, (req, res) => {
   res.render("house-types", { title: "House Types", active: "house-types" });
 });

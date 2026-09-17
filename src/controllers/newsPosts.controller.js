@@ -1,7 +1,5 @@
 const prisma = require("../config/prisma");
-
-// Normalizes "tags" which may arrive as an array, a comma-separated string,
-// or be absent.
+const { pingFrontend } = require("../helpers/webhook");
 function parseTags(tags) {
   if (Array.isArray(tags)) {
     return tags.map((t) => String(t).trim()).filter(Boolean);
@@ -27,13 +25,14 @@ function buildData(body) {
     status: body.status || "draft",
   };
 
-  if (body.publishedAt) {
-    data.publishedAt = new Date(body.publishedAt);
-  } else if (body.status === "published" && !body.publishedAtProvided) {
-    // Leave as-is; frontend can explicitly set publishedAt if desired.
-  } else {
-    data.publishedAt = null;
-  }
+if (body.publishedAt !== undefined) {
+  data.publishedAt = body.publishedAt ? new Date(body.publishedAt) : null;
+} else if (body.status === "published") {
+  // If status is published but no date was sent, do nothing. 
+  // It stays 'undefined', meaning Prisma won't overwrite any existing date.
+} else if (body.status === "draft") {
+  data.publishedAt = null;
+}
 
   return data;
 }
@@ -82,6 +81,9 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: "Title and body are required" });
     }
     const post = await prisma.newsPost.create({ data });
+
+    await pingFrontend();
+
     res.status(201).json(post);
   } catch (err) {
     console.error(err);
@@ -96,6 +98,11 @@ exports.update = async (req, res) => {
       where: { id: Number(req.params.id) },
       data,
     });
+    
+    // --- NEW: Ping the Next.js frontend to rebuild the cache ---
+    await pingFrontend();
+    // -----------------------------------------------------------
+
     res.json(post);
   } catch (err) {
     console.error(err);
@@ -109,6 +116,7 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     await prisma.newsPost.delete({ where: { id: Number(req.params.id) } });
+    await pingFrontend();
     res.json({ success: true });
   } catch (err) {
     console.error(err);

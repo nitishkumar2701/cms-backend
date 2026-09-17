@@ -9,25 +9,25 @@ const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@as-integrations/express4");
 const jwt = require("jsonwebtoken");
 
-// 1. EJS Dashboard Page Routes
+// EJS Dashboard Page Routes
 const authRoutes = require("./routes/auth.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
 const publicTrackingRoutes = require("./routes/publicTracking.routes");
 const campaignRoutes = require("./routes/campaigns.routes");
 
-// 2. REST API Routes (used by internal dashboard JS)
+// REST API Routes
 const newsPostsRoutes = require("./routes/newsPosts.routes");
 const pageContentRoutes = require("./routes/pageContent.routes");
 const houseTypesRoutes = require("./routes/houseTypes.routes");
 
-// 3. GraphQL Schema and Resolvers (used by external client frontend)
+// GraphQL Schema and Resolvers 
 const typeDefs = require("../API/schema");
 const resolvers = require("../API/resolver");
 
 async function initApp() {
   const app = express();
 
-  // CORS - Enables external frontend apps (e.g. Next.js / React on port 3001 or separate domain) to access /graphql
+  // CORS - Enables external frontend apps 
   app.use(cors({
     origin: true,
     credentials: true,
@@ -39,14 +39,14 @@ async function initApp() {
   app.use(expressLayouts);
   app.set("layout", "partials/layout");
 
-  // Standard Middleware
+  // Middleware
   app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, "public")));
 
-  // --- EJS UI ROUTES ---
+  // EJS UI ROUTES
   app.use("/", authRoutes);
   app.use("/", dashboardRoutes);
 
@@ -54,12 +54,12 @@ async function initApp() {
   app.use("/", publicTrackingRoutes); 
   app.use("/", campaignRoutes);
 
-  // --- REST API ENDPOINTS (For CMS Dashboard JS) ---
+  // REST API ENDPOINTS 
   app.use("/api/news-posts", newsPostsRoutes);
   app.use("/api/page-content", pageContentRoutes);
   app.use("/api/house-types", houseTypesRoutes);
 
-  // --- GRAPHQL API ENDPOINT (For Client Webpages / Mobile Apps) ---
+  // GRAPHQL API ENDPOINT 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -71,7 +71,6 @@ async function initApp() {
     "/graphql",
     expressMiddleware(server, {
       context: async ({ req }) => {
-        // Extract JWT from Authorization header or cookie
         const authHeader = req.headers.authorization || "";
         const token = authHeader.split(" ")[1] || req.cookies.jwt;
 

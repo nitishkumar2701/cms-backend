@@ -36,11 +36,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Support bcrypt-hashed passwords (recommended). Passwords are expected
-    // to look like bcrypt hashes ($2a$/$2b$/$2y$...). If for some reason a
-    // plain-text password was stored directly, fall back to a direct
-    // comparison so existing/manually-seeded rows still work, but you should
-    // migrate to hashed passwords ASAP (see scripts/seedAdmin.js).
     let passwordMatches = false;
     if (/^\$2[aby]\$/.test(admin.password)) {
       passwordMatches = await bcrypt.compare(password, admin.password);

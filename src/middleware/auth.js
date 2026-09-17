@@ -15,7 +15,6 @@ function verifyToken(token) {
   }
 }
 
-// Protects page routes (dashboard views): redirects to /login if not authed.
 function requireAuthPage(req, res, next) {
   const token = req.cookies[COOKIE_NAME];
   const user = token && verifyToken(token);
@@ -27,7 +26,6 @@ function requireAuthPage(req, res, next) {
   next();
 }
 
-// Protects JSON API routes: returns 401 instead of redirecting.
 function requireAuthApi(req, res, next) {
   const token = req.cookies[COOKIE_NAME];
   const user = token && verifyToken(token);
@@ -38,7 +36,6 @@ function requireAuthApi(req, res, next) {
   next();
 }
 
-// If already logged in, skip the login page.
 function redirectIfAuthed(req, res, next) {
   const token = req.cookies[COOKIE_NAME];
   const user = token && verifyToken(token);

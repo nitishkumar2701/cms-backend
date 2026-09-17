@@ -8,7 +8,7 @@ const brevo = new BrevoClient({
 
 async function sendEmailCampaign({ subject, body, newsPostId }) {
   try {
-    // 1. Fetch all active, consented subscribers
+    // Fetch all active, consented subscribers
     const subscribers = await prisma.subscriber.findMany({
       where: { consented: true },
     });
@@ -18,7 +18,7 @@ async function sendEmailCampaign({ subject, body, newsPostId }) {
       newsPost = await prisma.newsPost.findUnique({ where: { id: newsPostId } });
     }
 
-    // 2. Loop through subscribers and dispatch via HTTP API
+    // Loop through subscribers and dispatch via HTTP API
     for (const sub of subscribers) {
       const log = await prisma.emailLog.create({
         data: {

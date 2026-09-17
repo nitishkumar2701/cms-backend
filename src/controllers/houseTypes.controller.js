@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { pingFrontend } = require("../helpers/webhook");
 
 function parseImages(images) {
   if (Array.isArray(images)) {
@@ -87,6 +88,7 @@ exports.create = async (req, res) => {
       return res.status(400).json({ error: "Name is required" });
     }
     const houseType = await prisma.houseType.create({ data });
+    await pingFrontend();
     res.status(201).json(houseType);
   } catch (err) {
     console.error(err);
@@ -101,6 +103,11 @@ exports.update = async (req, res) => {
       where: { id: Number(req.params.id) },
       data,
     });
+    
+    // --- NEW: Ping the Next.js frontend to rebuild the cache ---
+    await pingFrontend();
+    // -----------------------------------------------------------
+
     res.json(houseType);
   } catch (err) {
     console.error(err);
@@ -111,9 +118,12 @@ exports.update = async (req, res) => {
   }
 };
 
+
+
 exports.remove = async (req, res) => {
   try {
     await prisma.houseType.delete({ where: { id: Number(req.params.id) } });
+    await pingFrontend();
     res.json({ success: true });
   } catch (err) {
     console.error(err);

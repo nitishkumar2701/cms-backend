@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { pingFrontend } = require("../helpers/webhook");
 
 function buildData(body) {
   return {
@@ -55,6 +56,8 @@ exports.create = async (req, res) => {
       });
     }
     const page = await prisma.pageContent.create({ data });
+
+    await pingFrontend();
     res.status(201).json(page);
   } catch (err) {
     console.error(err);
@@ -69,6 +72,9 @@ exports.update = async (req, res) => {
       where: { id: Number(req.params.id) },
       data,
     });
+
+    await pingFrontend();
+
     res.json(page);
   } catch (err) {
     console.error(err);
@@ -82,6 +88,9 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     await prisma.pageContent.delete({ where: { id: Number(req.params.id) } });
+    
+    await pingFrontend();
+
     res.json({ success: true });
   } catch (err) {
     console.error(err);
