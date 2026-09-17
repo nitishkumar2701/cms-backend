@@ -7,54 +7,137 @@
   <title>
     <%= typeof title !=='undefined' ? title + ' · CMS' : 'CMS' %>
   </title>
+
+  <!-- Add Google Fonts (Inter) for a modern dashboard look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/style.css" />
   <script src="/js/common.js" defer></script>
+
 </head>
 
-<body>
-  <div class="app-shell">
-    <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <div class="app-shell flex min-h-screen">
+
+    <!-- Mobile Menu Toggle -->
+    <button id="menuToggle"
+      class="menu-toggle lg:hidden fixed top-4 right-4 z-50 p-2 bg-slate-900 text-white rounded-md shadow-lg"
+      aria-label="Toggle menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
     </button>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand">
-        <span class="brand-mark">IRE Homes CMS</span>
-        <span class="brand-name">Admin Panel</span>
+    <!-- Sidebar -->
+    <aside
+      class="sidebar fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-300 shadow-2xl lg:translate-x-0 lg:static"
+      id="sidebar">
+
+      <!-- Brand Logo -->
+      <div class="sidebar-brand flex items-center gap-3 px-6 py-6 border-b border-slate-800">
+        <div
+          class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/50">
+          IR
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg text-white leading-tight">IRE Homes</span>
+          <span class="text-xs text-slate-400 font-medium">Admin Panel</span>
+        </div>
       </div>
-      <nav class="sidebar-nav">
-        <a href="/dashboard" class="nav-link <%= active === 'dashboard' ? 'active' : '' %>">
-          <span class="nav-icon">&#9632;</span> Dashboard
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+
+        <a href="/dashboard"
+          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 <%= active === 'dashboard' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' %>">
+          <svg class="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+            </path>
+          </svg>
+          Dashboard
         </a>
-        <a href="/news-posts" class="nav-link <%= active === 'news-posts' ? 'active' : '' %>">
-          <span class="nav-icon">&#128240;</span> News Posts
+
+        <a href="/news-posts"
+          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 <%= active === 'news-posts' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' %>">
+          <svg class="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+            </path>
+          </svg>
+          News Posts
         </a>
-        <a href="/page-content" class="nav-link <%= active === 'page-content' ? 'active' : '' %>">
-          <span class="nav-icon">&#128196;</span> Page Content
+
+        <a href="/page-content"
+          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 <%= active === 'page-content' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' %>">
+          <svg class="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
+          </svg>
+          Page Content
         </a>
-        <a href="/house-types" class="nav-link <%= active === 'house-types' ? 'active' : '' %>">
-          <span class="nav-icon">&#127968;</span> House Types
+
+        <a href="/house-types"
+          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 <%= active === 'house-types' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' %>">
+          <svg class="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+            </path>
+          </svg>
+          House Types
         </a>
-        <a href="/dashboard/campaigns" class="nav-link <%= active === 'campaigns' ? 'active' : '' %>">
-          <span class="nav-icon">&#9993;</span> Email Campaigns
+
+        <a href="/dashboard/campaigns"
+          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 <%= active === 'campaigns' ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' %>">
+          <svg class="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+            </path>
+          </svg>
+          Email Campaigns
         </a>
+
       </nav>
-      <form action="/logout" method="POST" class="sidebar-footer">
-        <button type="submit" class="btn btn-logout">Log out</button>
-      </form>
+
+      <!-- Footer / Logout -->
+      <div class="sidebar-footer p-5 border-t border-slate-800">
+        <form action="/logout" method="POST">
+          <button type="submit"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+            Log out
+          </button>
+        </form>
+      </div>
     </aside>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden lg:hidden"
+      id="sidebarOverlay"></div>
 
-    <main class="main-content">
-      <header class="topbar">
-        <h1 class="page-title">
+    <!-- Main Content Area -->
+  <main class="main-content flex-1 flex flex-col min-w-0 !ml-0">
+
+      <!-- Topbar -->
+      <header
+        class="topbar sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 md:px-10 py-5 flex items-center justify-between">
+        <h1 class="page-title text-2xl font-bold text-slate-800 m-0 tracking-tight">
           <%= title %>
         </h1>
       </header>
-      <div class="page-body">
+
+      <!-- Page Content -->
+      <div class="page-body p-6 md:p-10">
         <%- body %>
       </div>
+
     </main>
   </div>
 </body>

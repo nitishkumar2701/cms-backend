@@ -21,7 +21,12 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  /* Bumps the default thickness up one level */
+  -webkit-font-smoothing: antialiased;
+  /* Makes the font render crisper on screens */
+  -moz-osx-font-smoothing: grayscale;
   background: var(--bg);
   color: var(--text);
 }

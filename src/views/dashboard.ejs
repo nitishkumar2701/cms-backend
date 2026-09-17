@@ -1,31 +1,96 @@
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-value"><%= stats.newsCount %></div>
-    <div class="stat-label">Total News Posts</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value"><%= stats.publishedNews %></div>
-    <div class="stat-label">Published News</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value"><%= stats.pageCount %></div>
-    <div class="stat-label">Page Content Blocks</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value"><%= stats.houseCount %></div>
-    <div class="stat-label">Total House Types</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value"><%= stats.availableHouses %></div>
-    <div class="stat-label">Available House Types</div>
-  </div>
+<div class="mb-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard Overview</h1>
+  <p class="text-gray-500">Welcome back. Here is what is happening with your content.</p>
 </div>
 
-<div class="card">
-  <h2>Quick Links</h2>
-  <div class="quick-links">
-    <a href="/news-posts" class="quick-link">Manage News Posts &rarr;</a>
-    <a href="/page-content" class="quick-link">Manage Page Content &rarr;</a>
-    <a href="/house-types" class="quick-link">Manage House Types &rarr;</a>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+  <!-- News Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-blue-600">
+      <%= stats.newsCount %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Total News</div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-emerald-500">
+      <%= stats.publishedNews %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Published News</div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-amber-500">
+      <%= stats.draftNews %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Draft News</div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-purple-600">
+      <%= stats.pageCount %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Page Blocks</div>
+  </div>
+
+  <!-- Houses Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-blue-600">
+      <%= stats.houseCount %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Total Houses</div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-emerald-500">
+      <%= stats.publishedHouses %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Published Houses</div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-amber-500">
+      <%= stats.draftHouses %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Draft Houses</div>
+  </div>
+
+  <!-- Subscribers Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+    <div class="text-3xl font-bold text-indigo-600">
+      <%= stats.subscriberCount %>
+    </div>
+    <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-2">Subscribers</div>
+  </div>
+
+</div>
+
+<!-- Quick Links Section -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+  <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-4">Quick Links</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+    <a href="/news-posts"
+      class="group flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-200 transition-colors">
+      <span class="font-semibold text-gray-700 group-hover:text-blue-700">Manage News Posts</span>
+      <span class="text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-transform">&rarr;</span>
+    </a>
+
+    <a href="/page-content"
+      class="group flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-200 transition-colors">
+      <span class="font-semibold text-gray-700 group-hover:text-purple-700">Manage Page Content</span>
+      <span
+        class="text-gray-400 group-hover:text-purple-500 group-hover:translate-x-1 transition-transform">&rarr;</span>
+    </a>
+
+    <a href="/house-types"
+      class="group flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:border-emerald-200 transition-colors">
+      <span class="font-semibold text-gray-700 group-hover:text-emerald-700">Manage House Types</span>
+      <span
+        class="text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-transform">&rarr;</span>
+    </a>
+
   </div>
 </div>
