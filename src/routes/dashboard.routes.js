@@ -15,7 +15,7 @@ router.get("/dashboard", requireAuthPage, async (req, res) => {
         prisma.houseType.count({ where: { status: "published" } }),
         prisma.houseType.count({ where: { status: "draft" } }),
         prisma.newsPost.count({ where: { status: "draft" } }),
-        prisma.subscriber.count(),
+        prisma.subscriber.count({where:{ consented: true}}),
       ]);
 
     res.render("dashboard", {
