@@ -190,6 +190,63 @@ npm test
 npx eslint .
 
 ```
+Here is the final section to append or integrate into your `README.md` file, incorporating your demo links, schema reasons, design trade-offs, AI usage note, and future roadmap:
+
+---
+
+## 🔗 Hosted Demo & Test Credentials
+
+* **Public Site Demo:** [https://ire-homes.onrender.com](https://www.google.com/search?q=https://ire-homes.onrender.com&utm_source=gemini) *(Associated Next.js Frontend)*
+* **Admin CMS Dashboard:** [https://ire-homes-cms.onrender.com](https://www.google.com/search?q=https://ire-homes-cms.onrender.com&utm_source=gemini)
+* **Admin Test Credentials:**
+* **Username:** `user123`
+* **Password:** `pass123`
+
+
+
+---
+
+## 📊 Data-Model Architecture & Rationale
+
+### Architecture Overview
+
+The database uses PostgreSQL managed via Prisma ORM (`prisma/schema.prisma`)[cite: 1]. It is split into structural content entities (`HouseType`, `NewsPost`, `PageContent`), authentication (`AdminUser`), and user engagement entities (`Subscriber`, `EmailLog`).
+
+### Reason for Choosing This Schema
+
+* **Normalization & Relational Integrity:** Linking `EmailLog` directly to `Subscriber` via foreign keys ensures precise tracking of campaign dispatches without data duplication.
+* **Flexibility with Arrays:** Utilizing PostgreSQL native string arrays (`String[]`) for house image galleries and news tags avoids the overhead of complex many-to-many junction tables for simpler media fields.
+* **Decoupled Page Content:** The `PageContent` model uses unique `section_id` keys, allowing the public Next.js frontend to fetch exact structural snippets (hero, footers, etc.) dynamically via Incremental Static Regeneration (ISR).
+
+---
+
+## ⚖️ Key Decisions & Trade-offs
+
+1. **Memory-Buffer File Uploads vs. Direct Client Uploads:**
+* *Decision:* Used `multer` with memory storage to route uploads through the Express backend to Supabase Storage.
+* *Trade-off:* Adds slight network load to the backend server during upload, but allows centralized folder sanitization (based on house names/post titles) and strict admin authorization checks.
+
+
+2. **EJS + Tailwind CDN vs. Heavy SPA Framework:**
+* *Decision:* Kept the admin panel lightweight using Express, EJS, and Tailwind CSS.
+* *Trade-off:* Avoids heavy build pipelines for the internal dashboard while providing a modern, fast user experience.
+
+---
+
+## 🤖 AI Usage Note
+
+AI was used strictly as an assistant and productivity tool to accelerate boilerplate generation, template styling, and formatting. The overall architecture, routing patterns, database structure, and security flow were designed independently.
+
+---
+
+## 🔮 What’s Next (Future Roadmap)
+
+Given more time, the following improvements would be prioritized:
+
+* **Expanded Test Coverage:** Add comprehensive integration and unit tests covering controllers and edge cases (e.g., failed uploads, invalid tokens).
+* **Rich Text Editing:** Integrate a WYSIWYG editor (like TipTap or Quill) for news post and page content bodies instead of plain textareas.
+* **Role-Based Access Control (RBAC):** Introduce multi-tier admin permissions (e.g., Editor vs. Super Admin).
+* **Automated Analytics:** Build out visual charts on the dashboard for subscriber growth and campaign open/click rates.
 
 ## ☁️ Deployment Guide (Render Web Service)
 
@@ -210,4 +267,6 @@ Add all your production environment variables (from your .env file) into the Env
 Trigger a manual or automatic deployment. Render will build the application and host it live at your assigned web service domain.
 
 * **CI/CD Pipeline:** The GitHub Actions configuration file (`.github/workflows/ci.yml`) automatically triggers build verifications, code linting, and test scripts on every push or pull request to maintain production integrity.
+
+
 
