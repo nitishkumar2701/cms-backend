@@ -196,8 +196,8 @@ Here is the final section to append or integrate into your `README.md` file, inc
 
 ## 🔗 Hosted Demo & Test Credentials
 
-* **Public Site Demo:** [https://ire-homes.onrender.com](https://www.google.com/search?q=https://ire-homes.onrender.com&utm_source=gemini) *(Associated Next.js Frontend)*
-* **Admin CMS Dashboard:** [https://ire-homes-cms.onrender.com](https://www.google.com/search?q=https://ire-homes-cms.onrender.com&utm_source=gemini)
+* **Public Site Demo:** [https://cms-frontend-nine-gray.vercel.app/](https://cms-frontend-nine-gray.vercel.app/) *(Associated Next.js Frontend)*
+* **Admin CMS Dashboard:** [https://cms-backend-vjib.onrender.com](https://cms-backend-vjib.onrender.com)
 * **Admin Test Credentials:**
 * **Username:** `user123`
 * **Password:** `pass123`
