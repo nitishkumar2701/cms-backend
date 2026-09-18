@@ -1,4 +1,3 @@
-```markdown
 # IRE Homes CMS
 
 IRE Homes CMS is a production-ready administrative backend and dashboard built to manage real estate listings, news posts, dynamic page content blocks, and subscriber email campaigns. It features a modern Node.js and Express stack coupled with PostgreSQL via Prisma ORM, Supabase Storage for hybrid file management, and **Brevo** for consent-based email dispatch.
@@ -58,7 +57,6 @@ Managed through Prisma ORM (`prisma/schema.prisma`):
 ├── eslint.config.js         # ESLint code linting rules
 └── package.json             # Project dependencies and script runner hooks
 
-```
 
 ---
 
