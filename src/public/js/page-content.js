@@ -5,9 +5,50 @@
   const modalOverlay = document.getElementById("modalOverlay");
   const modalTitle = document.getElementById("modalTitle");
   const form = document.getElementById("postForm");
+  const imageUploader = document.getElementById("imageUploader");
 
   let debounceTimer = null;
   let isSubmitting = false;
+
+  // --- IMAGE UPLOAD LOGIC ---
+  if (imageUploader) {
+    imageUploader.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      // Use the section ID for the folder name (fallback if empty)
+      const sectionIdVal = document.getElementById("sectionId").value.trim();
+      formData.append('folderName', sectionIdVal || 'page-content');
+      
+      const label = imageUploader.previousElementSibling;
+      const originalText = label.textContent;
+      label.textContent = "Uploading... ⏳";
+
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.url) {
+          document.getElementById('imageUrl').value = data.url;
+        } else {
+          throw new Error(data.error || "Upload failed");
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        alert('Failed to upload image. Check server logs.');
+      } finally {
+        label.textContent = originalText;
+        imageUploader.value = ''; 
+      }
+    });
+  }
 
   function openModal(isEdit) {
     modalTitle.textContent = isEdit ? "Edit Content Block" : "New Content Block";
