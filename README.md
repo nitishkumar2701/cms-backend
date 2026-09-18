@@ -57,7 +57,7 @@ Managed through Prisma ORM (`prisma/schema.prisma`):
 ├── eslint.config.js         # ESLint code linting rules
 └── package.json             # Project dependencies and script runner hooks
 
-
+```
 ---
 
 ## 🛠️ Step-by-Step Local Setup & Installation
