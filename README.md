@@ -1,131 +1,199 @@
-# CMS Backend (Express + Prisma)
+```markdown
+# IRE Homes CMS
 
-A backend CMS with a responsive admin dashboard for managing `news_posts`,
-`page_content`, and `house_types` in your Prisma Postgres database, with a
-login page that authenticates against the `admin_users` table.
+IRE Homes CMS is a production-ready administrative backend and dashboard built to manage real estate listings, news posts, dynamic page content blocks, and subscriber email campaigns. It features a modern Node.js and Express stack coupled with PostgreSQL via Prisma ORM, Supabase Storage for hybrid file management, and **Brevo** for consent-based email dispatch.
 
-## Stack
+---
 
-- Node.js + Express
-- Prisma ORM (connects to your existing Prisma Postgres database)
-- EJS server-rendered dashboard UI (no frontend framework/build step)
-- JWT stored in an httpOnly cookie for session auth
-- bcrypt for password hashing
+## 🚀 Key Features & Capabilities
 
-## 1. Install dependencies
+* **Dashboard & Analytics:** Centralized overview tracking live operational metrics for properties, news updates, page components, and subscriber growth.
+* **House Types Management:** Comprehensive CRUD workflows for real estate properties, handling detailed specifications (pricing, BER ratings, dimensions in sqm/sqft, floor counts, and garage spaces) alongside dynamic folder-based image uploading.
+* **News Posts Engine:** Full blogging pipeline with category sorting, author metadata, tags, and publishing statuses.
+* **Dynamic Page Content Blocks:** Modular section control (`sectionId`, `sectionTitle`, `sectionBody`) allowing real-time content updates for public-facing websites.
+* **ISR & Refresh Token Support:** Secure token handling and revalidation architecture designed to sync with the Next.js frontend via Incremental Static Regeneration (ISR).
+* **Email Campaigns & Brevo Integration:** Built-in campaign composer and worker services (`campaignWorker.js`) that dispatch emails via **Brevo**, enforcing subscriber consent tracking (`consented: true`) and storing delivery logs (`EmailLog`).
+* **Hybrid Image Upload Workflow:** Secure file buffering via `multer` and direct upload to public Supabase Storage buckets, dynamically organized into folders based on record names.
+* **Testing & CI/CD:** Automated test suites (`__tests__/basicapp.test.js`) and a GitHub Actions workflow (`ci.yml`) ensuring continuous integration quality.
+* **Debugging & Seeding Tools:** Dedicated CLI scripts located in the `scripts/` directory to easily bootstrap admin accounts, seed sample database content, and update database values.
+
+---
+
+## 🗄️ Database Schema Overview
+
+Managed through Prisma ORM (`prisma/schema.prisma`):
+* **AdminUser:** Handles system administrator credentials and secure login sessions.
+* **NewsPost:** Stores blog posts, body content, tags, sections, and publication status.
+* **PageContent:** Stores decoupled content fragments for frontend website sections.
+* **HouseType:** Stores detailed property specifications, pricing decimals, and image URL arrays.
+* **Subscriber:** Manages subscriber email addresses and GDPR-compliant consent flags (`consented`).
+* **EmailLog:** Tracks individual campaign dispatch statuses (`sent` or `failed`) linked to subscribers.
+
+---
+
+## 📁 Directory Structure
+
+```text
+├── .github/workflows/       # GitHub Actions CI configurations (ci.yml)
+├── __tests__/               # Automated test suites (basicapp.test.js)
+├── API/                     # GraphQL/API resolvers and schemas
+├── prisma/                  # Prisma schema and database migrations
+├── public/                  # Frontend static files and styling
+│   ├── css/                 # Custom CSS stylesheets (style.css)
+│   └── js/                  # Client-side AJAX and modal scripts
+├── scripts/                 # CLI utility scripts for seeding and debugging
+│   ├── seed.js              # Sample data populator
+│   ├── seedAdmin.js         # Admin user creator/seeder
+│   └── updateScript.js      # Value updating debug script
+├── src/                     # Core application source code
+│   ├── config/              # Configuration files (prisma.js)
+│   ├── controllers/         # Request handlers (auth, houseTypes, newsPosts, etc.)
+│   ├── helpers/             # Utility modules (webhook.js)
+│   ├── middleware/          # Security & route guards (auth.js)
+│   ├── routes/              # Express feature-based routers
+│   ├── services/            # Background workers (campaignWorker.js)
+│   └── views/               # EJS template views and partials
+├── app.js                   # Express app setup and middleware configuration
+├── server.js                # HTTP server listener entry point
+├── eslint.config.js         # ESLint code linting rules
+└── package.json             # Project dependencies and script runner hooks
+
+```
+
+---
+
+## 🛠️ Step-by-Step Local Setup & Installation
+
+### Step 1: Prerequisites
+
+Ensure you have the following installed and set up before beginning:
+
+* **Node.js** (v18+ recommended)
+* **PostgreSQL database instance** (via Prisma Postgres)
+* **Supabase Account** (for public media storage)
+* **Brevo Account** (for campaign email delivery)
+
+### Step 2: Clone & Install Dependencies
+
+Clone your repository to your local machine and install all required Node modules:
 
 ```bash
+git clone <repository-url>
 cd cms-backend
 npm install
+
 ```
-## 2 . Update Environment Variables
 
-Edit `.env` and set:
+### Step 3: Configure Environment Variables
 
-- `DATABASE_URL` — your Prisma Postgres connection string (the same one your
-  existing Prisma project uses; find it in the Prisma Data Platform or your
-  existing `.env`).
-- `JWT_SECRET` — any long random string.
-- `PORT` — defaults to 3000.
+Create a `.env` file in the root directory of your project. Copy and populate the following template with your live keys and endpoints:
 
-## 3. Generate the Prisma client
+```env
+# Prisma Postgres connection string
+DATABASE_URL="postgresql://user:password@localhost:5432/ire_homes?schema=public"
 
-Since the
-tables already exist in your database, just generate the client — do **not**
-run `migrate` (that would try to create tables that already exist):
+# Secret used to sign JWT auth tokens
+JWT_SECRET=your_long_random_jwt_secret
+
+# Port the Express server listens on
+PORT=3000
+
+FRONTEND_URL=http://localhost:3001
+
+# Cookie / JWT expiry in seconds (e.g., 28800 = 8 hours)
+TOKEN_EXPIRY_SECONDS=28800
+
+# Set to "production" when deployed (enables secure cookies)
+NODE_ENV=development
+
+# Brevo & Email Configuration
+BREVOKEY=your_brevo_api_key
+EMAIL_FROM=nyouremail@gmail.com
+
+# Base URL (Crucial for working unsubscribe links & open-tracking pixels)
+BASE_URL=http://localhost:3000
+
+# Next.js ISR Revalidation Token
+REVALIDATION_TOKEN=your_frontend_revalidation_secret
+
+# Supabase Storage Configuration (Use service_role key to bypass RLS)
+SUPABASE_URL=[https://your-project.supabase.co](https://your-project.supabase.co)
+SUPABASE_KEY=your_supabase_service_role_key
+
+```
+
+> **Important Supabase Note:** Make sure your `SUPABASE_URL` uses only the base project domain (e.g., `https://your-project.supabase.co`) without trailing API paths like `/rest/v1/`. Also, ensure you use the Supabase **`service_role` secret key** for `SUPABASE_KEY` so backend uploads can bypass Row-Level Security (RLS).
+
+### Step 4: Initialize the Database & Run Migrations
+
+Generate the Prisma client and push/migrate your database schema:
 
 ```bash
 npx prisma generate
+npx prisma migrate dev --name init
+
 ```
 
-## 4. Run the app
+### Step 5: Configure Supabase Storage Bucket
+
+1. Log into your Supabase Dashboard.
+2. Navigate to **Storage** and create a new public bucket named `cms-images`.
+3. Mark the bucket as **Public** so that your Next.js frontend application can seamlessly render uploaded images.
+
+### Step 6: Seed Database & Create Admin User
+
+Use the built-in CLI scripts located in the `scripts/` folder to populate initial mock content and register your administrator profile:
 
 ```bash
-npm run dev    # with nodemon, auto-restarts on changes
-# or
+# Seed sample real estate listings, pages, and news content
+node scripts/seed.js
+
+# Create your primary admin user login credentials
+node scripts/seedAdmin.js
+
+```
+
+### Step 7: Run the Application
+
+Start your server depending on your target workflow:
+
+* For **development** with hot-reloading:
+```bash
+npm run dev
+
+```
+
+
+* For **production**:
+```bash
 npm start
-```
-
-Visit `http://localhost:3000` — you'll be redirected to `/login`. Log in with
-the admin credentials you seeded, and you'll land on `/dashboard`.
-
-## Project structure
 
 ```
-cms-backend/
-├── prisma/
-│   └── schema.prisma        # your provided models, mapped to existing tables
-├── scripts/
-│   └── seedAdmin.js         # create/update an admin user with a hashed password
-├── src/
-│   ├── app.js                # express app setup (middleware, routes, view engine)
-│   ├── server.js              # entry point
-│   ├── config/prisma.js       # shared PrismaClient instance
-│   ├── middleware/auth.js     # JWT sign/verify + route guards
-│   ├── controllers/           # request handlers for auth + each resource
-│   ├── routes/                # express routers (page routes + /api/* JSON routes)
-│   ├── views/                 # EJS templates (login, dashboard, resource pages)
-│   └── public/                # css/js served to the browser
-└── package.json
+
+
+
+The admin CMS dashboard will be live at `http://localhost:3000`.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+* **Run Test Suite:** Execute automated tests via Jest/Supertest setup:
+```bash
+npm test
+
 ```
 
-## How auth works
 
-- `POST /login` looks up the user by `username` in `admin_users`, compares
-  the submitted password against the stored bcrypt hash, and on success signs
-  a JWT (`{ id, username }`) stored in an httpOnly cookie (`cms_token`).
-- Dashboard page routes (`/dashboard`, `/news-posts`, `/page-content`,
-  `/house-types`) are protected by `requireAuthPage`, which redirects to
-  `/login` if the cookie is missing/invalid.
-- `/api/*` JSON routes are protected by `requireAuthApi`, which returns
-  `401 Unauthorized` instead of redirecting (the dashboard JS treats a 401 as
-  "session expired" and redirects to `/login`).
-- `POST /logout` clears the cookie.
+* **Lint Code:** Verify that your changes adhere to code style guidelines using ESLint:
+```bash
+npx eslint .
 
-## API endpoints
+```
 
-All under `/api`, all require the auth cookie, all accept/return JSON.
 
-| Resource      | Routes |
-|---------------|--------|
-| News Posts    | `GET /api/news-posts` (supports `?status=` & `?search=`), `GET /api/news-posts/:id`, `POST /api/news-posts`, `PUT /api/news-posts/:id`, `DELETE /api/news-posts/:id` |
-| Page Content  | `GET /api/page-content` (supports `?search=`), `GET /api/page-content/:id`, `POST /api/page-content`, `PUT /api/page-content/:id`, `DELETE /api/page-content/:id` |
-| House Types   | `GET /api/house-types` (supports `?status=` & `?search=`), `GET /api/house-types/:id`, `POST /api/house-types`, `PUT /api/house-types/:id`, `DELETE /api/house-types/:id` |
+* **CI/CD Pipeline:** The GitHub Actions configuration file (`.github/workflows/ci.yml`) automatically triggers build verifications, code linting, and test scripts on every push or pull request to maintain production integrity.
 
-Notes on field handling:
+```
 
-- `tags` (NewsPost) and `images` (HouseType) are Postgres native string
-  arrays. The API accepts either a real array or a comma-separated string
-  (e.g. `"ireland, housing, news"`) and normalizes it into an array before
-  writing to Postgres. The dashboard forms use a simple comma-separated text
-  input for these fields.
-- `price`, `floorAreaSqm`, `floorAreaSqft` are Prisma `Decimal` fields — the
-  API accepts numbers/numeric strings and converts them; empty values are
-  stored as `null`.
-- `publishedAt` accepts an ISO datetime string (the dashboard uses an HTML
-  `datetime-local` input); leave it blank to store `null`.
-
-## Deploying
-
-This is a standard Node/Express app — deploy it anywhere that runs Node 18+
-(Render, Railway, Fly.io, a VPS, etc.). Set the same environment variables
-from `.env` in your hosting provider's dashboard, run `npx prisma generate`
-as part of your build step, and start with `npm start`. Since sessions are
-JWTs in a cookie (not server-side session storage), the app is stateless and
-safe to run with multiple instances behind a load balancer.
-
-In production, set `NODE_ENV=production` so the auth cookie is marked
-`secure` (requires HTTPS).
-
-## Security notes / things to harden further for production
-
-- Add rate limiting to `/login` (e.g. `express-rate-limit`) to slow down
-  brute-force attempts.
-- Add CSRF protection if you extend this with additional cookie-authenticated
-  form posts beyond login/logout.
-- Consider adding pagination to the `GET` list endpoints if your tables grow
-  large — currently they return the full table (fine for typical CMS content
-  volumes, but worth revisiting at scale).
-- Move all admin passwords to bcrypt hashes (see step 4) — the plain-text
-  fallback exists only for compatibility with an already-populated table and
-  should not be relied on going forward.
+```
