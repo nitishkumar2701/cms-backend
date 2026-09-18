@@ -10,6 +10,7 @@ IRE Homes CMS is a production-ready administrative backend and dashboard built t
 * **House Types Management:** Comprehensive CRUD workflows for real estate properties, handling detailed specifications (pricing, BER ratings, dimensions in sqm/sqft, floor counts, and garage spaces) alongside dynamic folder-based image uploading.
 * **News Posts Engine:** Full blogging pipeline with category sorting, author metadata, tags, and publishing statuses.
 * **Dynamic Page Content Blocks:** Modular section control (`sectionId`, `sectionTitle`, `sectionBody`) allowing real-time content updates for public-facing websites.
+* **Server-Side Public Filtering (GraphQL/API):** Robust server-side checks implemented before sending data via public queries, ensuring that only items with a `published` status (whether news posts or house types) are exposed to the public-facing client.
 * **ISR & Refresh Token Support:** Secure token handling and revalidation architecture designed to sync with the Next.js frontend via Incremental Static Regeneration (ISR).
 * **Email Campaigns & Brevo Integration:** Built-in campaign composer and worker services (`campaignWorker.js`) that dispatch emails via **Brevo**, enforcing subscriber consent tracking (`consented: true`) and storing delivery logs (`EmailLog`).
 * **Hybrid Image Upload Workflow:** Secure file buffering via `multer` and direct upload to public Supabase Storage buckets, dynamically organized into folders based on record names.
