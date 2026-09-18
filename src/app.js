@@ -19,6 +19,7 @@ const campaignRoutes = require("./routes/campaigns.routes");
 const newsPostsRoutes = require("./routes/newsPosts.routes");
 const pageContentRoutes = require("./routes/pageContent.routes");
 const houseTypesRoutes = require("./routes/houseTypes.routes");
+const imageUploadRoutes = require('./routes/imageUpload.routes');
 
 // GraphQL Schema and Resolvers 
 const typeDefs = require("../API/schema");
@@ -58,6 +59,7 @@ async function initApp() {
   app.use("/api/news-posts", newsPostsRoutes);
   app.use("/api/page-content", pageContentRoutes);
   app.use("/api/house-types", houseTypesRoutes);
+  app.use('/api/upload', imageUploadRoutes);
 
   // GRAPHQL API ENDPOINT 
   const server = new ApolloServer({

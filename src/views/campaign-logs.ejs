@@ -1,44 +1,72 @@
-<div class="toolbar">
-    <div class="toolbar-filters">
-        <h2 style="margin: 0; font-size: 18px; align-self: center;">Email Dispatch Logs</h2>
+<!-- Top Toolbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+
+    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+        <h2 class="text-xl font-bold text-slate-800 m-0 self-center">Email Dispatch Logs</h2>
     </div>
-    <a href="/dashboard/campaigns/new" class="btn btn-primary">Compose New Campaign</a>
+
+    <!-- Action Button -->
+    <a href="/dashboard/campaigns/new"
+        class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 shadow-sm shadow-blue-600/30 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Compose New Campaign
+    </a>
 </div>
 
-<% if (logs.length===0) { %>
-    <div class="card">
-        <div class="empty-row" style="padding: 40px 0; text-align: center; color: var(--text-muted);">
-            No email logs found yet.
-        </div>
-    </div>
-    <% } else { %>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
+<!-- Data Table -->
+<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-10">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-sm data-table">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                        Subscriber Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Sent
+                        At</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-100">
+
+                <% if (logs.length===0) { %>
                     <tr>
-                        <th>Subscriber Email</th>
-                        <th>Status</th>
-                        <th>Sent At</th>
+                        <td colspan="3" class="px-6 py-10 text-center text-slate-400 font-medium empty-row">
+                            No email logs found yet.
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <% logs.forEach(log=> { %>
-                        <tr>
-                            <td><strong>
+                    <% } else { %>
+                        <% logs.forEach(log=> { %>
+                            <tr class="hover:bg-slate-50 transition-colors group">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                     <%= log.subscriber.email %>
-                                </strong></td>
-                            <td>
-                                <span
-                                    class="badge badge-<%= log.status === 'sent' ? 'published' : (log.status === 'pending' ? 'draft' : 'archived') %>">
-                                    <%= log.status %>
-                                </span>
-                            </td>
-                            <td style="color: var(--text-muted);">
-                                <%= new Date(log.createdAt).toLocaleString() %>
-                            </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
-            </table>
-        </div>
-        <% } %>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <% // Dynamically set badge colors based on status let
+                                        badgeColors="bg-slate-100 text-slate-800 border-slate-200" ; if
+                                        (log.status==='sent' )
+                                        badgeColors="bg-emerald-100 text-emerald-800 border-emerald-200" ; if
+                                        (log.status==='pending' )
+                                        badgeColors="bg-amber-100 text-amber-800 border-amber-200" ; if
+                                        (log.status==='failed' ) badgeColors="bg-red-100 text-red-800 border-red-200" ;
+                                        %>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border capitalize <%= badgeColors %>">
+                                            <%= log.status %>
+                                        </span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                    <%= new Date(log.createdAt).toLocaleString() %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } %>
+
+            </tbody>
+        </table>
+    </div>
+</div>

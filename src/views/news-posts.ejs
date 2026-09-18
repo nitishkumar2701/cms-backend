@@ -1,90 +1,162 @@
-<div class="toolbar">
-  <div class="toolbar-filters">
-    <input type="text" id="searchInput" placeholder="Search title, author, category..." class="input" />
-    <select id="statusFilter" class="input">
+<!-- Top Toolbar -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+
+  <!-- Search & Filters -->
+  <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+    <div class="relative w-full sm:w-64">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <input type="text" id="searchInput" placeholder="Search title..."
+        class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow shadow-sm" />
+    </div>
+
+    <select id="statusFilter"
+      class="w-full sm:w-40 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow shadow-sm cursor-pointer">
       <option value="">All statuses</option>
       <option value="draft">Draft</option>
       <option value="published">Published</option>
     </select>
   </div>
-  <button class="btn btn-primary" id="openCreateBtn">+ New Post</button>
+
+  <!-- Action Button -->
+  <button id="openCreateBtn"
+    class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 shadow-sm shadow-blue-600/30 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    New Post
+  </button>
 </div>
 
 <div id="alertBox"></div>
 
-<div class="table-wrap">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Category</th>
-        <th>Status</th>
-        <th>Published</th>
-        <th>Updated</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <tr><td colspan="7" class="empty-row">Loading...</td></tr>
-    </tbody>
-  </table>
+<!-- Data Table -->
+<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mb-10">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 text-sm data-table">
+      <thead class="bg-slate-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Author</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Updated</th>
+          <th class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody" class="bg-white divide-y divide-slate-100">
+        <tr>
+          <td colspan="7" class="px-6 py-10 text-center text-slate-400 font-medium empty-row">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="modalTitle">New Post</h2>
-      <button class="modal-close" id="modalCloseBtn">&times;</button>
+<!-- Slide-in / Centered Modal -->
+<div
+  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity"
+  id="modalOverlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+
+    <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50">
+      <h2 id="modalTitle" class="text-xl font-bold text-slate-800">New Post</h2>
+      <button id="modalCloseBtn" type="button"
+        class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
-    <form id="postForm" class="modal-body">
+
+    <form id="postForm" class="p-6 overflow-y-auto space-y-5">
       <input type="hidden" id="postId" />
 
-      <label for="title">Title *</label>
-      <input type="text" id="title" required class="input" />
+      <div>
+        <label for="title" class="block text-sm font-semibold text-slate-700 mb-1">Title *</label>
+        <input type="text" id="title" required
+          class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+          placeholder="Article title..." />
+      </div>
 
-      <label for="body">Body *</label>
-      <textarea id="body" rows="6" required class="input"></textarea>
+      <div>
+        <label for="body" class="block text-sm font-semibold text-slate-700 mb-1">Body Content</label>
+        <textarea id="body" rows="6"
+          class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors resize-y"
+          placeholder="Write your post here..."></textarea>
+      </div>
 
-      <div class="form-row">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label for="authorName">Author</label>
-          <input type="text" id="authorName" class="input" />
+          <label for="authorName" class="block text-sm font-semibold text-slate-700 mb-1">Author Name</label>
+          <input type="text" id="authorName"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors" />
         </div>
         <div>
-          <label for="category">Category</label>
-          <input type="text" id="category" class="input" />
+          <label for="category" class="block text-sm font-semibold text-slate-700 mb-1">Category</label>
+          <input type="text" id="category"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+            placeholder="e.g. Market Update" />
         </div>
       </div>
 
-      <div class="form-row">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label for="section">Section</label>
-          <input type="text" id="section" class="input" />
+          <label for="section" class="block text-sm font-semibold text-slate-700 mb-1">Section</label>
+          <input type="text" id="section"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors" />
         </div>
         <div>
-          <label for="status">Status</label>
-          <select id="status" class="input">
+          <label for="tags" class="block text-sm font-semibold text-slate-700 mb-1">Tags (comma separated)</label>
+          <input type="text" id="tags"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+            placeholder="real estate, tips" />
+        </div>
+      </div>
+
+      <!-- Image Upload & URL Section -->
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Upload Image</label>
+          <input type="file" id="imageUploader" accept="image/*"
+            class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer transition-colors" />
+        </div>
+
+        <div>
+          <label for="imageUrl" class="block text-sm font-semibold text-slate-700 mb-1">Cover Image URL (Auto-fills on
+            upload)</label>
+          <input type="text" id="imageUrl"
+            class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            placeholder="https://.../header.jpg" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-slate-100 pt-5">
+        <div>
+          <label for="status" class="block text-sm font-semibold text-slate-700 mb-1">Status</label>
+          <select id="status"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors cursor-pointer">
             <option value="draft">Draft</option>
             <option value="published">Published</option>
-            <!-- <option value="archived">Archived</option> -->
           </select>
+        </div>
+        <div>
+          <label for="publishedAt" class="block text-sm font-semibold text-slate-700 mb-1">Published At</label>
+          <input type="datetime-local" id="publishedAt"
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors" />
         </div>
       </div>
 
-      <label for="imageUrl">Image URL</label>
-      <input type="text" id="imageUrl" class="input" />
-
-      <label for="tags">Tags (comma separated)</label>
-      <input type="text" id="tags" class="input" placeholder="ireland, housing, news" />
-
-      <label for="publishedAt">Published At</label>
-      <input type="datetime-local" id="publishedAt" class="input" />
-
-      <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Post</button>
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+        <button type="button" id="cancelBtn"
+          class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors focus:ring-2 focus:ring-slate-300">Cancel</button>
+        <button type="submit"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">Save
+          Post</button>
       </div>
     </form>
   </div>
