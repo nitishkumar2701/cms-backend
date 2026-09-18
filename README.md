@@ -189,8 +189,7 @@ npm test
 npx eslint .
 
 ```
-Here is the final section to append or integrate into your `README.md` file, incorporating your demo links, schema reasons, design trade-offs, AI usage note, and future roadmap:
-
+* **CI/CD Pipeline:** The GitHub Actions configuration file (`.github/workflows/ci.yml`) automatically triggers build verifications, code linting, and test scripts on every push or pull request to maintain production integrity.
 ---
 
 ## 🔗 Hosted Demo & Test Credentials
@@ -265,7 +264,7 @@ Add all your production environment variables (from your .env file) into the Env
 
 Trigger a manual or automatic deployment. Render will build the application and host it live at your assigned web service domain.
 
-* **CI/CD Pipeline:** The GitHub Actions configuration file (`.github/workflows/ci.yml`) automatically triggers build verifications, code linting, and test scripts on every push or pull request to maintain production integrity.
+
 
 
 
