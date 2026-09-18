@@ -189,18 +189,19 @@ npx eslint .
 
 ```
 
-☁️ Deployment Guide (Render Web Service)
+## ☁️ Deployment Guide (Render Web Service)
+
 To deploy this backend application to Render:
 
 Create a new Web Service on Render and link your project GitHub repository.
 
 Configure the service settings:
 
-Environment: Node
+**Environment**: Node
 
-Build Command: npm install && npx prisma generate
+**Build Command**: npm install && npx prisma generate
 
-Start Command: npm start
+**Start Command**: npm start
 
 Add all your production environment variables (from your .env file) into the Environment tab on the Render dashboard (including DATABASE_URL, JWT_SECRET, BREVOKEY, SUPABASE_URL, SUPABASE_KEY, etc.).
 
