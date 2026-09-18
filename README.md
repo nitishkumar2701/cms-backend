@@ -192,6 +192,3 @@ npx eslint .
 
 * **CI/CD Pipeline:** The GitHub Actions configuration file (`.github/workflows/ci.yml`) automatically triggers build verifications, code linting, and test scripts on every push or pull request to maintain production integrity.
 
-```
-
-```
