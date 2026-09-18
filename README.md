@@ -1,4 +1,4 @@
-# IRE Homes CMS
+# IRE Homes CMS - https://cms-backend-vjib.onrender.com
 
 IRE Homes CMS is a production-ready administrative backend and dashboard built to manage real estate listings, news posts, dynamic page content blocks, and subscriber email campaigns. It features a modern Node.js and Express stack coupled with PostgreSQL via Prisma ORM, Supabase Storage for hybrid file management, and **Brevo** for consent-based email dispatch. Screenshots of the project - https://1drv.ms/w/c/32f619f17679bb0c/IQCMG_gY5MbSSpsCcUUQSx29AcnfFWvgOIFio7GAKrkSQd8?e=jGYc3Z
 
